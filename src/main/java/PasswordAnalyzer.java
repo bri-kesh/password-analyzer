@@ -1,9 +1,4 @@
-import org.apache.hc.client5.http.classic.methods.HttpGet;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-import org.apache.hc.client5.http.impl.classic.HttpClients;
-import org.apache.hc.core5.http.io.entity.EntityUtils;
 
-import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.List;
 
@@ -38,41 +33,6 @@ public class PasswordAnalyzer {
         return COMMON_PASSWORDS.contains(password.toLowerCase());
     }
 
-    // Converts password to SHA-1 hash
-    public String toSHA1(String password) throws Exception {
-        MessageDigest md = MessageDigest.getInstance("SHA-1");
-        byte[] hashBytes = md.digest(password.getBytes("UTF-8"));
-        StringBuilder sb = new StringBuilder();
-        for (byte b : hashBytes) {
-            sb.append(String.format("%02X", b));
-        }
-        return sb.toString();
-    }
-
-    // Checks HaveIBeenPwned API
-    public int checkBreach(String password) throws Exception {
-        String hash = toSHA1(password);
-        String prefix = hash.substring(0, 5);
-        String suffix = hash.substring(5);
-
-        String url = "https://api.pwnedpasswords.com/range/" + prefix;
-
-        try (CloseableHttpClient client = HttpClients.createDefault()) {
-            HttpGet request = new HttpGet(url);
-            request.setHeader("User-Agent", "PasswordAnalyzer-Student-Project");
-
-            return client.execute(request, response -> {
-                String body = EntityUtils.toString(response.getEntity());
-                for (String line : body.split("\n")) {
-                    String[] parts = line.split(":");
-                    if (parts[0].equalsIgnoreCase(suffix)) {
-                        return Integer.parseInt(parts[1].trim());
-                    }
-                }
-                return 0;
-            });
-        }
-    }
 
     public String analyze(String password) {
         // Immediately fail common passwords
@@ -95,7 +55,7 @@ public class PasswordAnalyzer {
         // Check breach
         String breachResult;
         try {
-            int count = checkBreach(password);
+            int count = BreachChecker.check(password);
             if (count > 0) {
                 breachResult = "⚠️  Found in " + count + " data breaches!";
             } else {

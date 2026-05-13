@@ -37,6 +37,15 @@ has been exposed in real-world data breaches using the HaveIBeenPwned API.
 - Apache HttpClient5
 - HaveIBeenPwned API
 
+## 🏗️ Project Structure
+```
+src/main/java/
+├── Main.java              → Entry point, CLI loop
+├── PasswordAnalyzer.java  → Password strength scoring
+├── BreachChecker.java     → HaveIBeenPwned API integration
+└── HashUtil.java          → SHA-1 hashing utility
+```
+
 ## 🚀 How To Run
 
 ### Prerequisites
@@ -54,13 +63,17 @@ has been exposed in real-world data breaches using the HaveIBeenPwned API.
 ```bash
 git clone https://github.com/bri-kesh/password-analyzer.git
 cd password-analyzer
-mvn compile
-mvn exec:java -Dexec.mainClass="Main"
+mvn package
+java -jar target/password-analyzer.jar
 ```
 
 ## 📊 Example Output
 ```
-=== Password Analyzer ===
+╔═══════════════════════════════╗
+║      🔐 Password Analyzer      ║
+║  Type 'exit' to quit           ║
+╚═══════════════════════════════╝
+
 Enter a password to analyze: Amwrica@2026#
 
 Password: Amwrica@2026#
@@ -69,11 +82,7 @@ Variety Score: 4/4
 Total Score: 6/7
 Strength: Very Strong 💪
 Breach Check: ✅ Not found in any known data breaches
-
-
 ```
-
-
 
 ## 🧠 Concepts Learned
 - SHA-1 cryptographic hashing
@@ -81,4 +90,5 @@ Breach Check: ✅ Not found in any known data breaches
 - REST API integration in Java
 - Maven dependency management
 - Object-Oriented Programming
+- Single Responsibility Principle (SRP)
 
